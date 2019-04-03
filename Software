@@ -1,0 +1,218 @@
+/* Código v1.0
+  Proyecto Void Curiosity
+  Danny Caro
+  Alejandro Lauriño
+  !º BTO TIND-TIC
+  IES Vicente Aleixandre */
+
+#include <Servo.h> //incluimos la librería para poder controlar los servomotores
+
+//Definimos los pines de los servomotores
+#define S1 12
+#define S2  7
+#define S3  4
+#define S4  2
+
+Servo s1, s2, s3, s4;
+
+
+
+// Pines de control de los motores
+
+// Pines motor derecho
+const int inA = 3;
+const int inB = 10;
+const int enA = 5;
+
+// Pines motor izquierdo
+const int inC = 9;
+const int inD = 8;
+const int enB = 6;
+
+
+int posS1, posS2, posS3, posS4; //Creamos las variables para almacenar la posición de los servos
+int pasoServo = 5; // Incremento de posicion de los servos
+
+//Creamos una función para definir la posición inical de lo0s servos
+void setServosInitialState() {
+  posS1 = 97;
+  posS2 = 105;
+  posS3 = 98;
+  posS4 = 82;
+}
+
+
+// La velocidad va desde -255 a 255, con valores negativos moviendose hacia atras
+int velocidad = 0;
+int pasoVelocidad = 10; // Usaremos este incremento
+
+// Nos permite dar velocidad a cada motor
+void setSpeed(int enB, int speed) {
+  if (speed > 0) {
+    analogWrite(enB, speed);
+  }
+  else {
+    analogWrite(enB, - speed);
+  }
+}
+
+
+void setState() {
+  setSpeed(enB, velocidad);
+  setSpeed(enA, velocidad);
+  s1.write(posS1);
+  s2.write(posS2);
+  s3.write(posS3);
+  s4.write(posS4);
+}
+
+
+// El motor gira en sentido horario
+void clockWise() {
+  digitalWrite(inA, HIGH);
+  digitalWrite(inB, LOW);
+  digitalWrite(inC, HIGH);
+  digitalWrite(inD, LOW);
+}
+
+
+
+// Función para que el motor gire en sentido antihorario
+void antiClockWise() {
+  digitalWrite(inA, LOW);
+  digitalWrite(inB, HIGH);
+  digitalWrite(inC, LOW);
+  digitalWrite(inD, HIGH);
+}
+
+
+void setup() {
+
+  // Configuramos los pines de los motores como salida
+  pinMode(inA, OUTPUT);
+  pinMode(inB, OUTPUT);
+  pinMode(inC, OUTPUT);
+  pinMode(inD, OUTPUT);
+
+
+  // Configuramos los pines de los servos como salida
+  pinMode(S1, OUTPUT);
+  pinMode(S2, OUTPUT);
+  pinMode(S3, OUTPUT);
+  pinMode(S4, OUTPUT);
+
+  // Configuramos las comunicaciones
+  Serial.begin(9600);
+
+  // Configuramos los servos
+  s1.attach(S1);
+  s2.attach(S2);
+  s3.attach(S3);
+  s4.attach(S4);
+
+  setServosInitialState();
+
+  setState();
+
+}
+
+
+void loop() {
+
+  /*
+    Control de velocidad y giro por movimiento
+    F el robot anda con v=150
+    S detiene en seco
+    A acelera los 6 motores
+    X ralentiza los 6 motores
+
+    Control de giro usando los servos
+    L girar a la izquierda
+    R girar a la derecha
+    O servos rectos
+  */
+
+  if (Serial.available() > 0) {
+    char caracter = Serial.read();
+    switch (caracter) {
+
+      case 'F': //Utilizamos para que el robot pueda caminar hacia delante
+        if (velocidad > 0 ) velocidad = 150;
+        else  velocidad = 150;
+        clockWise();
+        break;
+
+      case 'B': //Utilizamos para que el robot pueda dar marcha atrás
+        if (velocidad > 0 ) velocidad = 150;
+        else  velocidad = 150;
+        antiClockWise();
+        break;
+
+      case 'A': // Aceleramos la velocidad
+        if (velocidad >= 0) {
+          velocidad += pasoVelocidad;
+          clockWise();
+        }
+        else {
+          velocidad += pasoVelocidad;
+          antiClockWise();
+        }
+        break;
+
+
+      case 'S': //Paramos los motores
+        velocidad = 0;
+        break;
+
+
+      case 'X': //Reducimos el valor de la velocidad
+        if (velocidad >= 0) {
+          velocidad -= pasoVelocidad;
+          antiClockWise();
+        }
+        else {
+          velocidad += pasoVelocidad;
+          antiClockWise();
+        }
+        velocidad -= pasoVelocidad;
+        break;
+
+      case 'L': // Mas giro a la izquierda
+        posS1 -= pasoServo;
+        posS4 -= pasoServo;
+        posS3 += pasoServo;
+        posS2 += pasoServo;
+        break;
+
+      case 'O': // Ponemos los servomotores en la posición inicial
+        setServosInitialState();
+        break;
+
+      case 'R': // Mas giro a la derecha
+        posS1 += pasoServo;
+        posS4 += pasoServo;
+        posS3 -= pasoServo;
+        posS2 -= pasoServo;
+        break;
+    }
+
+    // Vemos si nos hemos pasado de posiciones
+    if (posS1 < 0) posS1 = 0;
+    if (posS2 < 0) posS2 = 0;
+    if (posS3 < 0) posS3 = 0;
+    if (posS4 < 0) posS4 = 0;
+    if (posS1 > 180) posS1 = 180;
+    if (posS2 > 180) posS2 = 180;
+    if (posS3 > 180) posS3 = 180;
+    if (posS4 > 180) posS4 = 180;
+
+    // Vemos si nos pasamos en las velocidades
+    if (velocidad > 255 ) velocidad = 255;
+    if (velocidad < -255 ) velocidad = -255;
+
+    setState();
+
+  }
+}
+
+
