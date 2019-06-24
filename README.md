@@ -6,7 +6,7 @@ El proyecto consiste en un réplica a escala del famoso robot de investigación 
 
 Para más información sobre nuestro proyecto podéis visitar la web de nuestro proyecto https://sites.google.com/iesvaleix.com/voidcuriosity
 
-<img src="Curiosity.jpg" width="600" align="center">
+<img src="https://github.com/dannycaro/Void_Curiosity/blob/master/Fotos/Curiosity.jpg" width="600" align="center">
 
 En el repositorio puedes encontrar:
 - [Memoria del proyecto en PDF](https://github.com/dannycaro/Void_Curiosity/blob/master/Memoria%20curiosity.pdf)
