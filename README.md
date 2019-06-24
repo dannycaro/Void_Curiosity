@@ -4,7 +4,7 @@ VoidCuriosity es el proyecto que están realizando un grupo de alumnos de 1º de
 
 El proyecto consiste en un réplica a escala del famoso robot de investigación denominado como Curiosity de la NASA. Es un vehículo de exploración que puede superar terrenos difíciles y obstáculos con los que tendrían problemas otro tipo de vehículos. 
 
-Para más información sobre nuestro proyecto podéis visitar la web de nuestro proyecto https://sites.google.com/iesvaleix.com/voidcuriosity
+Para más información sobre nuestro proyecto podéis visitar la [web de nuestro proyecto](https://sites.google.com/iesvaleix.com/voidcuriosity)
 
 <img src="https://github.com/dannycaro/Void_Curiosity/blob/master/Fotos/Curiosity.jpg" width="600" align="center">
 
